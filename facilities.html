@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resort Facilities & Amenities | Tamarind Tree Garden Resort</title>
+    
+    <style>
+        :root {
+            --primary: #1b4d3e;
+            --primary-light: #2d6a58;
+            --secondary: #d4af37;
+            --secondary-light: #e5c158;
+            --accent: #8b4513;
+            --bg: #faf9f6;
+            --surface: #ffffff;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --border: #e0e0e0;
+            --shadow: rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #2d6a58;
+            --primary-light: #3d8b73;
+            --secondary: #e5c158;
+            --secondary-light: #f0d78c;
+            --accent: #cd853f;
+            --bg: #1a1a1a;
+            --surface: #2d2d2d;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --border: #404040;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(45,45,45,0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 5px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--secondary);
+        }
+
+        /* Header */
+        .page-header {
+            margin-top: 80px;
+            background: linear-gradient(rgba(27,77,62,0.9), rgba(27,77,62,0.9)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Facilities Grid */
+        .facilities-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .facility-card {
+            background: var(--surface);
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .facility-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: calc(var(--i) * 0.1s);
+        }
+
+        .facility-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--secondary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .facility-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .facility-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+
+        .facility-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .facility-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .facility-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Special Sections */
+        .special-section {
+            background: var(--surface);
+            padding: 60px;
+            border-radius: 20px;
+            margin: 40px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 40px var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .special-content h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .special-content p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .special-image {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+
+        .special-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .special-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-light);
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface);
+            padding: 60px 20px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .footer-section a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            line-height: 2;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--surface);
+                flex-direction: column;
+                padding: 100px 40px;
+                transition: var(--transition);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .special-section {
+                grid-template-columns: 1fr;
+                padding: 30px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">T</div>
+                <span>Tamarind Tree</span>
+            </a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="facilities.html" class="active">Facilities</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="booking.html">Booking</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
+
+            <div class="mobile-menu" id="mobileMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>World-Class Facilities</h1>
+        <p>Experience unparalleled luxury with our comprehensive range of amenities designed for your comfort and enjoyment</p>
+    </header>
+
+    <section class="facilities-section">
+        <div class="section-title">
+            <h2>Resort Amenities</h2>
+            <p>Everything you need for a perfect stay</p>
+        </div>
+
+        <div class="facilities-grid">
+            <div class="facility-card" style="--i:0">
+                <span class="facility-icon">📶</span>
+                <h3>Free Wi-Fi</h3>
+                <p>High-speed internet access throughout the resort including rooms, lobby, and pool area.</p>
+            </div>
+
+            <div class="facility-card" style="--i:1">
+                <span class="facility-icon">🏊</span>
+                <h3>Outdoor Swimming Pool</h3>
+                <p>Olympic-size pool surrounded by lush gardens, sun loungers, and poolside service.</p>
+            </div>
+
+            <div class="facility-card" style="--i:2">
+                <span class="facility-icon">🏋️</span>
+                <h3>Fitness Center</h3>
+                <p>Modern gym equipment open 24/7 with personal trainers available upon request.</p>
+            </div>
+
+            <div class="facility-card" style="--i:3">
+                <span class="facility-icon">🎾</span>
+                <h3>Tennis Court</h3>
+                <p>Professional-grade tennis courts with equipment rental and coaching available.</p>
+            </div>
+
+            <div class="facility-card" style="--i:4">
+                <span class="facility-icon">🍽️</span>
+                <h3>Restaurant & Bar</h3>
+                <p>Multi-cuisine restaurant and cocktail bar with live music on weekends.</p>
+            </div>
+
+            <div class="facility-card" style="--i:5">
+                <span class="facility-icon">✈️</span>
+                <h3>Airport Shuttle</h3>
+                <p>Complimentary 24/7 shuttle service to and from Colombo International Airport.</p>
+            </div>
+
+            <div class="facility-card" style="--i:6">
+                <span class="facility-icon">💼</span>
+                <h3>Business Center</h3>
+                <p>Fully-equipped business center with meeting rooms and secretarial services.</p>
+            </div>
+
+            <div class="facility-card" style="--i:7">
+                <span class="facility-icon">👕</span>
+                <h3>Laundry Service</h3>
+                <p>Same-day laundry and dry cleaning services available with express options.</p>
+            </div>
+
+            <div class="facility-card" style="--i:8">
+                <span class="facility-icon">🐕</span>
+                <h3>Pet-Friendly</h3>
+                <p>Designated pet-friendly rooms and pet care services available for your companions.</p>
+            </div>
+
+            <div class="facility-card" style="--i:9">
+                <span class="facility-icon">👶</span>
+                <h3>Kid-Friendly</h3>
+                <p>Children's play area, kids pool, babysitting services, and special kids' menu.</p>
+            </div>
+
+            <div class="facility-card" style="--i:10">
+                <span class="facility-icon">🧘</span>
+                <h3>Ayurveda & Wellness</h3>
+                <p>Traditional Sri Lankan spa treatments, massages, and wellness consultations.</p>
+            </div>
+
+            <div class="facility-card" style="--i:11">
+                <span class="facility-icon">🚗</span>
+                <h3>Free Parking</h3>
+                <p>Secure, covered parking facility with valet service available for all guests.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="special-section">
+        <div class="special-content">
+            <h3>Wellness & Spa</h3>
+            <p>Immerse yourself in tranquility at our world-class wellness center. Our expert therapists offer traditional Ayurvedic treatments, aromatherapy massages, and modern spa therapies designed to rejuvenate your body and mind.</p>
+            <ul class="feature-list">
+                <li>Traditional Ayurvedic treatments</li>
+                <li>Hot stone therapy</li>
+                <li>Facial treatments</li>
+                <li>Yoga and meditation sessions</li>
+                <li>Steam room and sauna</li>
+            </ul>
+            <a href="booking.html" class="btn" style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: var(--primary); color: white; text-decoration: none; border-radius: 25px;">Book Treatment</a>
+        </div>
+        <div class="special-image">
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbec6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Spa">
+        </div>
+    </div>
+
+    <div class="special-section" style="direction: rtl;">
+        <div class="special-content" style="direction: ltr;">
+            <h3>Conference & Events</h3>
+            <p>Host your business meetings, conferences, or special celebrations in our elegant event spaces. From intimate boardrooms to grand banquet halls, we provide state-of-the-art facilities and impeccable service to ensure your event is a success.</p>
+            <ul class="feature-list">
+                <li>High-speed presentation facilities</li>
+                <li>Catering services</li>
+                <li>Event planning assistance</li>
+                <li>Outdoor venue options</li>
+                <li>Accommodation packages for attendees</li>
+            </ul>
+            <a href="contact.html" class="btn" style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: var(--primary); color: white; text-decoration: none; border-radius: 25px;">Enquire Now</a>
+        </div>
+        <div class="special-image" style="direction: ltr;">
+            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Conference">
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Tamarind Tree Garden Resort</h3>
+                <p>Luxury 4-star resort in Katunayake, Sri Lanka</p>
+                <div class="social-links">
+                    <a href="#">f</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐦</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Links</h3>
+                <a href="index.html">Home</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="gallery.html">Gallery</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p style="color: var(--text-light);">📍 Andiambalama Estate, Yatiyana</p>
+                <p style="color: var(--text-light);">📞 +94 11 225 4297</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Tamarind Tree Garden Resort</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeButton(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+
+        function updateThemeButton(theme) {
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            themeText.textContent = theme === 'dark' ? 'Light' : 'Dark';
+        }
+
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.facility-card').forEach((card, index) => {
+            card.style.setProperty('--i', index);
+            observer.observe(card);
+        });
+
+        // Back to Top
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('visible', window.pageYOffset > 300);
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

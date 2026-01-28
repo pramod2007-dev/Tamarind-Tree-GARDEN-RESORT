@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Reviews | Tamarind Tree Garden Resort</title>
+    
+    <style>
+        :root {
+            --primary: #1b4d3e;
+            --primary-light: #2d6a58;
+            --secondary: #d4af37;
+            --secondary-light: #e5c158;
+            --accent: #8b4513;
+            --bg: #faf9f6;
+            --surface: #ffffff;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --border: #e0e0e0;
+            --shadow: rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #2d6a58;
+            --primary-light: #3d8b73;
+            --secondary: #e5c158;
+            --secondary-light: #f0d78c;
+            --accent: #cd853f;
+            --bg: #1a1a1a;
+            --surface: #2d2d2d;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --border: #404040;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(45,45,45,0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 5px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* Header */
+        .page-header {
+            margin-top: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .rating-summary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .average-rating {
+            font-size: 4rem;
+            font-weight: 700;
+        }
+
+        .rating-stars {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .total-reviews {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Reviews Grid */
+        .reviews-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .review-card {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .review-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .review-type {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--bg);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .review-stars {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .review-title {
+            font-size: 1.2rem;
+            margin: 15px 0 10px;
+            color: var(--text);
+        }
+
+        .review-text {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .review-helpful {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .helpful-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .helpful-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface);
+            padding: 60px 20px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--surface);
+                flex-direction: column;
+                padding: 100px 40px;
+                transition: var(--transition);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .reviews-container {
+                grid-template-columns: 1fr;
+            }
+
+            .rating-summary {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">T</div>
+                <span>Tamarind Tree</span>
+            </a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="facilities.html">Facilities</a></li>
+                <li><a href="reviews.html" class="active">Reviews</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="booking.html">Booking</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
+
+            <div class="mobile-menu" id="mobileMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Guest Reviews</h1>
+        <p>Real experiences from our valued guests</p>
+        
+        <div class="rating-summary">
+            <div class="average-rating">4.1</div>
+            <div>
+                <div class="rating-stars">★★★★☆</div>
+                <div class="total-reviews">Based on 248 reviews</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="filter-section">
+        <button class="filter-btn active" data-filter="all">All Reviews</button>
+        <button class="filter-btn" data-filter="business">Business</button>
+        <button class="filter-btn" data-filter="family">Family</button>
+        <button class="filter-btn" data-filter="couple">Couple</button>
+    </div>
+
+    <div class="reviews-container" id="reviewsContainer">
+        <!-- Review 1 -->
+        <div class="review-card" data-category="business">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">JM</div>
+                    <div>
+                        <div class="reviewer-name">James Mitchell</div>
+                        <div class="review-date">January 2026</div>
+                        <span class="review-type">Business</span>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★★</div>
+            </div>
+            <h3 class="review-title">Perfect Airport Transit Hotel</h3>
+            <p class="review-text">Stayed here for one night between flights. The proximity to the airport is unbeatable - just 10 minutes with their free shuttle. The room was immaculate, bed extremely comfortable, and the breakfast buffet had excellent variety. Highly recommend for business travelers.</p>
+            <div class="review-helpful">
+                <button class="helpful-btn">👍 Helpful (12)</button>
+                <button class="helpful-btn">💬 Comment</button>
+            </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="review-card" data-category="family">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">SW</div>
+                    <div>
+                        <div class="reviewer-name">Sarah Williams</div>
+                        <div class="review-date">December 2025</div>
+                        <span class="review-type">Family</span>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★★</div>
+            </div>
+            <h3 class="review-title">Amazing Family Vacation</h3>
+            <p class="review-text">We stayed for 5 nights with two kids (ages 8 and 12). The pool was a huge hit, and the kids loved the garden - they even saw monkeys in the trees! The staff was incredibly accommodating with special meals for the children. The chalet gave us plenty of space.</p>
+            <div class="review-helpful">
+                <button class="helpful-btn">👍 Helpful (8)</button>
+                <button class="helpful-btn">💬 Comment</button>
+            </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="review-card" data-category="couple">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">EC</div>
+                    <div>
+                        <div class="reviewer-name">Emma & Chris</div>
+                        <div class="review-date">January 2026</div>
+                        <span class="review-type">Couple</span>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★☆</div>
+            </div>
+            <h3 class="review-title">Romantic Getaway</h3>
+            <p class="review-text">Beautiful resort with lovely gardens. The executive suite was spacious with a great view of the pool. We enjoyed the Ayurvedic spa treatments - very authentic. Only minor issue was slow WiFi in the room, but perfect for a digital detox! Would definitely return.</p>
+            <div class="review-helpful">
+                <button class="helpful-btn">👍 Helpful (15)</button>
+                <button class="helpful-btn">💬 Comment</button>
+            </div>
+        </div>
+
+        <!-- Review 4 -->
+        <div class="review-card" data-category="business">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">RK</div>
+                    <div>
+                        <div class="reviewer-name">Rajesh Kumar</div>
+                        <div class="review-date">November 2025</div>
+                        <span class="review-type">Business</span>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★☆</div>
+            </div>
+            <h3 class="review-title">Good Value for Money</h3>
+            <p class="review-text">Attended a conference here. The business center facilities were excellent - good projectors, fast internet in meeting rooms. Food during the conference was well organized. Rooms are comfortable but starting to show slight wear. Overall good experience for corporate events.</p>
+            <div class="review-helpful">
+                <button class="helpful-btn">👍 Helpful (6)</button>
+                <button class="helpful-btn">💬 Comment</button>
+            </div>
+        </div>
+
+        <!-- Review 5 -->
+        <div class="review-card" data-category="couple">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">LM</div>
+                    <div>
+                        <div class="reviewer-name">Laura Martinez</div>
+                        <div class="review-date">October 2025</div>
+                        <span class="review-type">Couple</span>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★★</div>
+            </div>
+            <h3 class="review-title">Hidden Gem Near Airport</h3>
+            <p class="review-text">Can't believe such tranquility exists so close to the airport! We stayed one night before our early morning flight. The garden is magical at sunset. Restaurant serves delicious Sri Lankan curry. Staff arranged a 4 AM airport transfer without any fuss.</p>
+            <div class="review-helpful">
+                <button class="helpful-btn">👍 Helpful (22)</button>
+                <button class="helpful-btn">💬 Comment</button>
+            </div>
+        </div>
+
+        <!-- Review 6 -->
+        <div class="review-card" data-category="family">
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">TC</div>
+                    <div>
+                        <div class="reviewer-name">The Chen Family</div>
+                        <div class="review-date">September 2025</div>
+                        <span class="review-type">Family</span>
+                    </div>
+                </div>
+                <div class="review-stars">★★★★☆</div>
+            </div>
+            <h3 class="review-title">Great for Kids</h3>
+            <p class="review-text">Traveling with a toddler can be stressful, but the staff here made it so easy. They provided a crib, high chair, and even prepared special mild meals for our little one. The kids pool is safe and shallow. Garden is perfect for running around.</p>
+            <div class="review-helpful">
+                <button class="helpful-btn">👍 Helpful (9)</button>
+                <button class="helpful-btn">💬 Comment</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content" style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; color: var(--text-light);">
+                <p>&copy; 2026 Tamarind Tree Garden Resort. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = newTheme === 'dark' ? 'Light' : 'Dark';
+        });
+
+        updateThemeButton(savedTheme);
+        function updateThemeButton(theme) {
+            document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = theme === 'dark' ? 'Light' : 'Dark';
+        }
+
+        // Mobile Menu
+        document.getElementById('mobileMenu').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Filter Reviews
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const reviewCards = document.querySelectorAll('.review-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filter = btn.getAttribute('data-filter');
+                
+                reviewCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                        setTimeout(() => card.classList.add('visible'), 10);
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.remove('visible');
+                    }
+                });
+            });
+        });
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        reviewCards.forEach(card => observer.observe(card));
+
+        // Helpful button interaction
+        document.querySelectorAll('.helpful-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.textContent.includes('Helpful')) {
+                    const match = this.textContent.match(/\d+/);
+                    const currentCount = match ? parseInt(match[0]) : 0;
+                    this.textContent = `👍 Helpful (${currentCount + 1})`;
+                    this.style.color = 'var(--primary)';
+                    this.style.fontWeight = '600';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
